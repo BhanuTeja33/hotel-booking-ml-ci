@@ -4,8 +4,15 @@ import unittest
 import joblib
 import pandas as pd
 
+from train_model import train_model
+
 
 class TestMLPipeline(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        """Execute model training once before all tests run."""
+        train_model()
 
     def test_dataset_exists(self):
         """1. Verify that the Hotel Bookings dataset exists and is accessible."""
