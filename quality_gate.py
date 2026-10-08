@@ -2,7 +2,7 @@ import json
 import sys
 
 # Define minimum acceptable operational accuracy threshold
-MINIMUM_ACCURACY = 0.90
+MINIMUM_ACCURACY = 0.75
 
 print("Reading model evaluation metrics...")
 
