@@ -7,6 +7,11 @@ from train_model import train_model, DATA_FILE
 
 class TestHotelBookingML(unittest.TestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        """Ensure the model artifacts exist before artifact validation tests run."""
+        cls.accuracy = train_model()
+
     def test_dataset_exists_and_valid(self):
         """Test 1: Verify the dataset exists and contains expected columns."""
         self.assertTrue(os.path.exists(DATA_FILE), f"Dataset file '{DATA_FILE}' not found!")
@@ -16,7 +21,7 @@ class TestHotelBookingML(unittest.TestCase):
 
     def test_model_training_and_accuracy(self):
         """Test 2: Verify model trains and achieves acceptable benchmark accuracy (> 75%)."""
-        accuracy = train_model()
+        accuracy = self.accuracy
         self.assertGreaterEqual(
             accuracy,
             0.75,
