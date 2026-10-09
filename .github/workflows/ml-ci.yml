@@ -44,7 +44,7 @@ jobs:
         with:
           name: hotel-booking-ml-artifacts
           path: |
-            hotel_booking_model_missing.pkl
+            hotel_booking_model.pkl
             metrics.json
             hotel_bookings.csv
           if-no-files-found: error
