@@ -2,15 +2,23 @@ import json
 import joblib
 import pandas as pd
 
-from sklearn.compose import ColumnTransformer
-from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.preprocessing import StandardScaler
 
 DATA_FILE = "Hotel Bookings.csv"
+
+FEATURES = [
+    "lead_time",
+    "previous_cancellations",
+    "booking_changes",
+    "total_of_special_requests",
+    "required_car_parking_spaces",
+]
+
+TARGET = "is_canceled"
 
 
 def train_model():
@@ -20,50 +28,8 @@ def train_model():
     print("Dataset loaded successfully.")
     print("Number of records:", len(data))
 
-    features = [
-        "hotel", "lead_time", "arrival_date_year", "arrival_date_month",
-        "stays_in_weekend_nights", "stays_in_week_nights", "adults",
-        "children", "babies", "meal", "market_segment", "distribution_channel",
-        "is_repeated_guest", "previous_cancellations", "booking_changes",
-        "deposit_type", "customer_type", "adr", "required_car_parking_spaces",
-        "total_of_special_requests"
-    ]
-    target = "is_canceled"
-
-    X = data[features]
-    y = data[target]
-
-    categorical_features = [
-        "hotel", "arrival_date_month", "meal", "market_segment",
-        "distribution_channel", "deposit_type", "customer_type"
-    ]
-
-    numerical_features = [
-        "lead_time", "arrival_date_year", "stays_in_weekend_nights",
-        "stays_in_week_nights", "adults", "children", "babies",
-        "is_repeated_guest", "previous_cancellations", "booking_changes",
-        "adr", "required_car_parking_spaces", "total_of_special_requests"
-    ]
-
-    numerical_pipeline = Pipeline([
-        ("imputer", SimpleImputer(strategy="median")),
-        ("scaler", StandardScaler())
-    ])
-
-    categorical_pipeline = Pipeline([
-        ("imputer", SimpleImputer(strategy="most_frequent")),
-        ("encoder", OneHotEncoder(handle_unknown="ignore"))
-    ])
-
-    preprocessing = ColumnTransformer([
-        ("numerical", numerical_pipeline, numerical_features),
-        ("categorical", categorical_pipeline, categorical_features)
-    ])
-
-    model = Pipeline([
-        ("preprocessing", preprocessing),
-        ("classifier", LogisticRegression(max_iter=1000, random_state=42))
-    ])
+    X = data[FEATURES]
+    y = data[TARGET]
 
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.20, random_state=42, stratify=y
@@ -72,6 +38,11 @@ def train_model():
     print("Training records:", len(X_train))
     print("Testing records:", len(X_test))
     print("Training model...")
+
+    model = Pipeline([
+        ("scaler", StandardScaler()),
+        ("classifier", LogisticRegression(max_iter=1000, random_state=42)),
+    ])
 
     model.fit(X_train, y_train)
 
@@ -91,7 +62,7 @@ def train_model():
     metrics = {
         "accuracy": float(accuracy),
         "training_records": len(X_train),
-        "testing_records": len(X_test)
+        "testing_records": len(X_test),
     }
 
     with open("metrics.json", "w") as file:
