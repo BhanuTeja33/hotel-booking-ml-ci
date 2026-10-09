@@ -1,7 +1,6 @@
 import unittest
 from app import app
 
-
 class TestPredictionApplication(unittest.TestCase):
     def setUp(self):
         self.client = app.test_client()
@@ -44,13 +43,10 @@ class TestPredictionApplication(unittest.TestCase):
     def test_missing_field_validation(self):
         response = self.client.post(
             "/predict",
-            json={
-                "lead_time": 30
-            }
+            json={"lead_time": 30}
         )
         self.assertEqual(response.status_code, 400)
         self.assertIn("missing_fields", response.get_json())
-
 
 if __name__ == "__main__":
     unittest.main()
