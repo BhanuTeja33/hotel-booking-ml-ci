@@ -1,7 +1,7 @@
 from pathlib import Path
 import joblib
 import pandas as pd
-from flask import Flask, jsonify, reques
+from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
